@@ -1,4 +1,4 @@
-pub fn run(s: String) {
+pub fn run(s:String) {
     let games: Vec<Vec<Hand>> = s
         .trim()
         .split("\n")
