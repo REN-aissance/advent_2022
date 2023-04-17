@@ -24,6 +24,7 @@ pub fn run(s: String) {
         for _ in 0..count {
             clawstack.insert(0, lanes.get_mut(from).unwrap().pop().unwrap());
 
+            // Part 1 solution
             // let c: Crate = lanes.get_mut(from).unwrap().pop().unwrap();
             // lanes.get_mut(to).unwrap().push(c);
         }
