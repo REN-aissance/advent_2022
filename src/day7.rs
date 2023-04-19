@@ -13,12 +13,8 @@ pub fn run(s: String) {
                     file_system.cd(args[2]);
                 }
             }
-            "dir" => {
-                file_system.add_folder(args[1]);
-            }
-            _ => {
-                file_system.add_file(args[0].parse::<u32>().unwrap());
-            }
+            "dir" => file_system.add_folder(args[1]),
+            _ => file_system.add_file(args[0].parse::<u32>().unwrap()),
         }
     }
 
