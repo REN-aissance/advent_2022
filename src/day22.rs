@@ -1,3 +1,1 @@
-pub fn run(s: String) {
-
-}
+pub fn run(_s: String) {}
