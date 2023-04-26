@@ -1,15 +1,23 @@
 use aoc2022::*;
 use std::env::args;
-use std::fs;
+use std::{fs, process};
 
 //Regex for counting lines of code: /^(?!^[ \)\};]*$)/gm
 fn main() {
     let args: Vec<String> = args().collect();
-    if args.len() != 2 {
-        panic!("provide puzzle number")
-    }
+    let s;
 
-    let s = fs::read_to_string("./inputs/".to_owned() + &args[1] + ".txt").unwrap();
+    if args.len() != 2 && args.len() != 3 {
+        eprintln!("Specifcy puzzle number and optionally \"test\"");
+        process::exit(1);
+    } else if args.get(2).is_some() {
+        s = fs::read_to_string("./inputs/test.txt").unwrap();
+    } else {
+        s = fs::read_to_string("./inputs/".to_owned() + &args[1] + ".txt").unwrap_or_else(|_f| {
+            eprintln!("Puzzle input text not found");
+            process::exit(2);
+        });
+    }
 
     match &args[1].parse::<u8>().unwrap() {
         1 => day1::run(s),
