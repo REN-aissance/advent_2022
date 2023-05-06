@@ -1,9 +1,9 @@
-pub fn run(s:String) {
+pub fn run(s: String) {
     let games: Vec<Vec<Hand>> = s
         .trim()
-        .split("\n")
+        .split('\n')
         .map(|f| {
-            f.split(" ")
+            f.split(' ')
                 .map(|f| match f {
                     "A" => Hand::Rock,
                     "B" => Hand::Paper,
@@ -58,7 +58,7 @@ impl Hand {
         }
     }
     pub fn value(&self) -> i32 {
-        return *self as i32;
+        *self as i32
     }
     pub fn eval(self, rhs: &Hand) -> i32 {
         let mut result = 0;

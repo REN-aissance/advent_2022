@@ -5,7 +5,7 @@ pub fn run(s: String) {
 
     let mut lines = s.lines();
     lines.next(); //skip root
-    while let Some(line) = lines.next() {
+    for line in lines {
         let args = line.split_whitespace().collect::<Vec<&str>>();
         match args[0] {
             "$" => {
@@ -59,7 +59,7 @@ impl FileSystem {
         let mut contents: HashMap<String, Folder> = HashMap::new();
         contents.insert("".to_string(), Folder::default());
         FileSystem {
-            contents: contents,
+            contents,
             working_directory: "".to_string(),
         }
     }
@@ -81,13 +81,13 @@ impl FileSystem {
     }
     fn add_file_r(&mut self, name: &String, size: u32) {
         self.contents.get_mut(name).unwrap().add_file(size);
-        if let Some(split) = name.rsplit_once("/") {
+        if let Some(split) = name.rsplit_once('/') {
             let parent = split.0.to_string();
             self.add_file_r(&parent, size);
         }
     }
-    fn step_up(name: &String) -> String {
-        name.rsplit_once("/").unwrap().0.to_string()
+    fn step_up(name: &str) -> String {
+        name.rsplit_once('/').unwrap().0.to_string()
     }
 }
 

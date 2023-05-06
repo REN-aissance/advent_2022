@@ -1,3 +1,5 @@
+use std::fs;
+
 pub mod day1;
 pub mod day10;
 pub mod day11;
@@ -23,3 +25,12 @@ pub mod day6;
 pub mod day7;
 pub mod day8;
 pub mod day9;
+
+#[derive(Debug)]
+pub struct PuzzleError;
+
+pub fn get_input(path: &str) -> String {
+    fs::read_to_string(path).unwrap_or_else(|_| {
+        panic!("Puzzle input text not found");
+    })
+}

@@ -11,14 +11,13 @@ pub fn run(s: String) {
     for line in s_iter {
         let re = Regex::new(r#"(\d+)"#).expect("regex");
         let line = line.trim();
-        let cap: Vec<usize> = re
-            .captures_iter(&line)
-            .map(|x| x[0].to_string().parse::<usize>().unwrap())
-            .collect();
+        let mut cap = re
+            .captures_iter(line)
+            .map(|x| x[0].to_string().parse::<usize>().unwrap());
 
-        let count = cap.get(0).unwrap().clone();
-        let from = cap.get(1).unwrap().clone() - 1;
-        let to = cap.get(2).unwrap().clone() - 1;
+        let count = cap.next().unwrap();
+        let from = cap.next().unwrap() - 1;
+        let to = cap.next().unwrap() - 1;
 
         let mut clawstack: Vec<Crate> = Vec::new();
         for _ in 0..count {
@@ -48,7 +47,7 @@ fn build_cratemap(s_iter: &mut std::str::Lines) -> String {
 
 fn populate_lanes(
     mut cratemap_iter: std::iter::Peekable<std::str::Lines>,
-    lanes: &mut Vec<Vec<Crate>>,
+    lanes: &mut [Vec<Crate>],
 ) {
     while cratemap_iter.peek().is_some() {
         let mut count = 0;

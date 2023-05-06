@@ -1,3 +1,4 @@
+#[allow(clippy::needless_range_loop)]
 pub fn run(s: String) {
     let s = s.trim();
 
@@ -67,7 +68,7 @@ pub fn run(s: String) {
     println!("Best view: {} trees", max_view_score);
 }
 
-fn get_trees_visible(trees: &Vec<Vec<Tree>>) {
+fn get_trees_visible(trees: &[Vec<Tree>]) {
     let mut trees_visible = 0;
     trees.iter().for_each(|row| {
         row.iter().for_each(|tree| match tree.visible {
