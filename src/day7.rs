@@ -1,53 +1,79 @@
 use std::collections::HashMap;
 
-pub fn run(s: String) {
-    let mut file_system = FileSystem::new();
+use crate::solver::Solver;
 
-    let mut lines = s.lines();
-    lines.next(); //skip root
-    for line in lines {
-        let args = line.split_whitespace().collect::<Vec<&str>>();
-        match args[0] {
-            "$" => {
-                if args[1] == "cd" {
-                    file_system.cd(args[2]);
+pub fn get_solver() -> Solver {
+    Solver::new("./inputs/7.txt", |input| {
+        let mut out = vec![];
+        let mut file_system = FileSystem::new();
+
+        let mut lines = input.lines();
+        lines.next(); //skip root
+        for line in lines {
+            let args = line.split_whitespace().collect::<Vec<&str>>();
+            match args[0] {
+                "$" => {
+                    if args[1] == "cd" {
+                        file_system.cd(args[2]);
+                    }
                 }
+                "dir" => file_system.add_folder(args[1]),
+                _ => file_system.add_file(args[0].parse::<u32>().unwrap()),
             }
-            "dir" => file_system.add_folder(args[1]),
-            _ => file_system.add_file(args[0].parse::<u32>().unwrap()),
         }
-    }
 
-    //Part 1
-    let mut total = 0;
-    for f in file_system.contents.values() {
-        if f.size <= 100000 {
-            total += f.size;
-        }
-        let line = format!("{: <56} : {: <8} : {}", f.path(), f.size, total);
-        println!("{}", line);
-    }
-    println!();
+        //Print fs for fun
+        file_system.contents.values().for_each(|f| {
+            let line = format!("{: <56} : {: <8}", f.path(), f.size);
+            println!("{}", line);
+        });
+        println!();
 
-    //Part 2
-    let total_space = &file_system.contents.get("").unwrap().size;
-    let empty_space = 70000000 - total_space;
-    let space_needed = 30000000 - empty_space;
+        //Part 1
+        let p1 = file_system
+            .contents
+            .values()
+            .filter_map(|f| {
+                if f.size <= 100_000 {
+                    Some(f.size)
+                } else {
+                    None
+                }
+            })
+            .reduce(|acc, x| acc + x)
+            .unwrap()
+            .to_string();
+        out.push(p1);
 
-    let mut candidate_directory = Folder::default();
-    candidate_directory.add_file(u32::MAX);
+        //Part 2
+        let total_space = &file_system.contents.get("").unwrap().size;
+        let empty_space = 70000000 - total_space;
+        let space_needed = 30000000 - empty_space;
+        let default_folder = Folder {
+            size: u32::MAX,
+            path: String::new(),
+        };
 
-    for f in file_system.contents.values() {
-        if f.size > space_needed && f.size < candidate_directory.size {
-            candidate_directory = f.clone();
-        }
-    }
-    println!(
-        "Need {} : Delete {} to save {}",
-        space_needed,
-        candidate_directory.path(),
-        candidate_directory.size
-    );
+        let p2 = file_system
+            .contents
+            .values()
+            .fold(default_folder, |acc, f| {
+                if f.size > space_needed && f.size < acc.size {
+                    f.to_owned()
+                } else {
+                    acc
+                }
+            });
+        out.push(p2.size.to_string());
+
+        println!(
+            "Need {} : Delete {} to save {}",
+            space_needed,
+            p2.path(),
+            p2.size
+        );
+        out
+    })
 }
 
 struct FileSystem {
@@ -118,6 +144,32 @@ impl Folder {
             "/".to_string()
         } else {
             self.path.clone()
+        }
+    }
+}
+
+#[cfg(test)]
+pub mod test {
+    use crate::solver::Validate;
+
+    use super::*;
+    const TEST_PATH: &str = "./test_inputs/7.txt";
+    const EXPECTED_TEST: (&str, &str) = ("95437", "24933642");
+    const EXPECTED_REAL: (&str, &str) = ("1582412", "3696336");
+
+    #[test]
+    fn test() {
+        let solver = get_solver();
+        if let Err(e) = solver.validate_on(TEST_PATH, EXPECTED_TEST) {
+            panic!("{:?}", e);
+        }
+    }
+
+    #[test]
+    fn real() {
+        let solver = get_solver();
+        if let Err(e) = solver.validate(EXPECTED_REAL) {
+            panic!("{:?}", e);
         }
     }
 }

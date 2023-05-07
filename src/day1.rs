@@ -1,51 +1,51 @@
-use super::PuzzleError;
-use super::*;
 use std::collections::BinaryHeap;
 
-const PATH: &str = "./inputs/1.txt";
+use crate::solver::Solver;
 
-pub fn run() -> Result<Vec<String>, PuzzleError> {
-    run_on(PATH)
-}
+pub fn get_solver() -> Solver {
+    Solver::new("./inputs/1.txt", |input| {
+        //This is probably not best practice, but I am practicing iterators.
+        let mut elves = input
+            .trim()
+            .split("\n\n")
+            .map(|f| {
+                f.split('\n')
+                    .map(|f| f.parse::<u32>().unwrap())
+                    .reduce(|acc, x| acc + x)
+                    .unwrap()
+            })
+            .collect::<BinaryHeap<u32>>();
 
-fn run_on(path: &str) -> Result<Vec<String>, PuzzleError> {
-    let input = get_input(path);
-    let mut bheap = BinaryHeap::<u32>::new();
-    let mut output: Vec<String> = vec![];
-
-    //This is probably not best practice, but I am practicing iterators.
-    input
-        .trim()
-        .split("\n\n")
-        .map(|f| {
-            f.trim()
-                .split('\n')
-                .map(|f| f.parse::<u32>().unwrap())
-                .reduce(|acc, x| acc + x)
-                .unwrap()
-        })
-        .for_each(|f| bheap.push(f));
-
-    let mut x = bheap.pop().unwrap();
-    output.push(x.to_string());
-    x += bheap.pop().unwrap() + bheap.pop().unwrap();
-    output.push(x.to_string());
-    Ok(output)
+        let p1 = elves.pop().unwrap();
+        let p2 = p1 + elves.pop().unwrap() + elves.pop().unwrap();
+        let p1 = p1.to_string();
+        let p2 = p2.to_string();
+        vec![p1, p2]
+    })
 }
 
 #[cfg(test)]
 pub mod test {
+    use crate::solver::Validate;
+
     use super::*;
+    const TEST_PATH: &str = "./test_inputs/1.txt";
+    const EXPECTED_TEST: (&str, &str) = ("24000", "45000");
+    const EXPECTED_REAL: (&str, &str) = ("67016", "200116");
 
     #[test]
-    fn day1_test() {
-        let result = Vec::from(["24000", "45000"]);
-        assert_eq!(run_on("./test_inputs/1.txt").unwrap(), result);
+    fn test() {
+        let solver = get_solver();
+        if let Err(e) = solver.validate_on(TEST_PATH, EXPECTED_TEST) {
+            panic!("{:?}", e);
+        }
     }
 
     #[test]
-    fn day1() {
-        let result = Vec::from(["67016", "200116"]);
-        assert_eq!(run().unwrap(), result);
+    fn real() {
+        let solver = get_solver();
+        if let Err(e) = solver.validate(EXPECTED_REAL) {
+            panic!("{:?}", e);
+        }
     }
 }
