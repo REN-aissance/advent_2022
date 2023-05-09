@@ -13,13 +13,6 @@ fn p1(input: &str) -> String {
     let lanes = populate_lanes(&split);
     let instructions = split[1].lines();
 
-    for lane in &lanes {
-        for c in lane {
-            print!("{}", c);
-        }
-        println!()
-    }
-
     let mut lanes = lanes;
     for line in instructions {
         let re = Regex::new(r#"(\d+)"#).expect("regex");
