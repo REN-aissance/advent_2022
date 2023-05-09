@@ -5,10 +5,7 @@ type SolveResult = Vec<String>;
 type PuzzleResult = Result<(), PuzzleError>;
 
 #[derive(Debug)]
-pub enum PuzzleError {
-    Failure,
-    PartialSuccess,
-}
+pub struct PuzzleError(String);
 
 pub struct Solver {
     input: String,
@@ -26,12 +23,12 @@ impl Solver {
 
 impl Solve for Solver {
     fn solve(&self) -> SolveResult {
-        (*self.solution)(&self.input)
+        (*self.solution)(self.input.trim_end())
     }
 
     fn solve_on(&self, path: &str) -> SolveResult {
         let input = Self::get_input(path);
-        (*self.solution)(&input)
+        (*self.solution)(input.trim_end())
     }
 }
 
@@ -49,10 +46,10 @@ impl Validate for Solver {
 
 fn get_result(result: Vec<String>, expected: (&str, &str)) -> Result<(), PuzzleError> {
     if result[0] != expected.0 {
-        return Err(PuzzleError::Failure);
+        return Err(PuzzleError(format!("P1: {} != {}", result[0], expected.0)));
     }
     if result[1] != expected.1 {
-        return Err(PuzzleError::PartialSuccess);
+        return Err(PuzzleError(format!("P2: {} != {}", result[1], expected.1)));
     }
     Ok(())
 }

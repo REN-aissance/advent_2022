@@ -21,7 +21,8 @@ fn main() {
         7 => day7::get_solver().solve(),
         8 => day8::get_solver().solve(),
         9 => day9::get_solver().solve(),
-        10..=25 => panic!("solution not yet implemented"),
+        10 => day10::get_solver().solve(),
+        11..=25 => panic!("solution not yet implemented"),
         _ => panic!("invalid puzzle number"),
     };
     println!("{:?}", out);
