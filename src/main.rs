@@ -12,6 +12,7 @@ fn main() {
     }
 
     let out = match &args[1].parse::<u8>().unwrap() {
+        0 => panic!("Invalid puzzle number"),
         1 => day1::get_solver().solve(),
         2 => day2::get_solver().solve(),
         3 => day3::get_solver().solve(),
@@ -22,8 +23,9 @@ fn main() {
         8 => day8::get_solver().solve(),
         9 => day9::get_solver().solve(),
         10 => day10::get_solver().solve(),
-        11..=25 => panic!("solution not yet implemented"),
-        _ => panic!("invalid puzzle number"),
+        11 => day11::get_solver().solve(),
+        12 => day12::get_solver().solve(),
+        13.. => panic!("solution not yet implemented"),
     };
     println!("{:?}", out);
 }

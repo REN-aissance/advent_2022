@@ -104,7 +104,7 @@ impl Sub for Vec2 {
 impl Vec2 {
     fn needs_normalization(&self) -> bool {
         self.0.abs() * self.1.abs() != 1 //excludes FIRST order diagonals
-        && self.taxicab() > 1 //excludes orthoganally adjacent and everything else
+        && self.taxicab() > 1 //excludes orthoganally adjacent and center
     }
     fn taxicab(&self) -> i32 {
         self.0.abs() + self.1.abs()

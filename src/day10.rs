@@ -20,7 +20,7 @@ pub fn get_solver() -> Solver {
             cpu.extract_desired(&mut acc);
             cpu.print_display_char();
         }
-        println!();
+        print!("\n\n");
         vec![acc.to_string(), String::new()]
     })
 }
